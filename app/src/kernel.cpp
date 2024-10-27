@@ -15,8 +15,8 @@ static const char FromKernel[] = "kernel";
 
 #define WIDTH 320  // display width in pixels
 #define HEIGHT 480 // display height in pixels
-#define DC_PIN 22
-#define RESET_PIN 23
+#define DC_PIN 23
+#define RESET_PIN HX8357::None
 #define BACKLIGHT_PIN HX8357::None
 
 //#define USB_GADGET_MODE
@@ -134,8 +134,8 @@ TShutdownMode CKernel::Run(void)
 
                 m_Synth->Process(bUpdated);
 
-                // 10 frames per second
-                if (CTimer::GetClockTicks64() - screenUpdateTime > 1000000) {
+                // 10 frames per second; this is just to test if the display can draw stuff while audio is going
+                if (CTimer::GetClockTicks64() - screenUpdateTime > 100000) {
                         UG_FillFrame(100, 100, 200, 200, nCount);
                         screenUpdateTime = CTimer::GetClockTicks64();
                 }

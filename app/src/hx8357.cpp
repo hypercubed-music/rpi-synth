@@ -438,8 +438,8 @@ void HX8357::SendByte (u8 uchByte, boolean bIsData)
 
 	m_DCPin.Write (bIsData ? HIGH : LOW);
 
-	m_pSPIMaster->SetClock (m_nClockSpeed);
-	m_pSPIMaster->SetMode (m_CPOL, m_CPHA);
+	//m_pSPIMaster->SetClock (m_nClockSpeed);
+	//m_pSPIMaster->SetMode (m_CPOL, m_CPHA);
 
 #ifndef NDEBUG
 	int nResult =
