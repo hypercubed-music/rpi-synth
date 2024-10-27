@@ -4614,7 +4614,7 @@ void UG_FillScreen( UG_COLOR c )
    UG_FillFrame(0,0,gui->x_dim-1,gui->y_dim-1,c);
 }
 
-void UG_FillFrame( UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c)
+void UG_FillFrame( UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c )
 {
    UG_S16 n,m;
 
@@ -4644,7 +4644,6 @@ void UG_FillFrame( UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c)
          gui->pset(n,m,c);
       }
    }
-   
 }
 
 void UG_FillRoundFrame( UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_S16 r, UG_COLOR c )
@@ -4695,7 +4694,6 @@ void UG_FillRoundFrame( UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_S16 r, UG
      }
      x++;
    }
-   
 }
 
 void UG_DrawMesh( UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c )
@@ -4722,7 +4720,6 @@ void UG_DrawMesh( UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c )
          gui->pset(n,m,c);
       }
    }
-   
 }
 
 void UG_DrawFrame( UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c )
@@ -4802,7 +4799,6 @@ void UG_DrawCircle( UG_S16 x0, UG_S16 y0, UG_S16 r, UG_COLOR c )
          xd += 2;
       }
    }
-   
 }
 
 void UG_FillCircle( UG_S16 x0, UG_S16 y0, UG_S16 r, UG_COLOR c )
@@ -4840,7 +4836,6 @@ void UG_FillCircle( UG_S16 x0, UG_S16 y0, UG_S16 r, UG_COLOR c )
      }
      x++;
    }
-   
    UG_DrawCircle(x0, y0, r,c);
 }
 
@@ -4886,7 +4881,6 @@ void UG_DrawArc( UG_S16 x0, UG_S16 y0, UG_S16 r, UG_U8 s, UG_COLOR c )
          xd += 2;
       }
    }
-   
 }
 
 void UG_DrawLine( UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c )
@@ -4939,8 +4933,7 @@ void UG_DrawLine( UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c )
          drawy += sgndy;
          gui->pset(drawx, drawy,c);
       }
-   }
-   
+   }  
 }
 
 void UG_PutString( UG_S16 x, UG_S16 y, char* str )
@@ -4973,13 +4966,11 @@ void UG_PutString( UG_S16 x, UG_S16 y, char* str )
 
       xp += cw + gui->char_h_space;
    }
-   
 }
 
 void UG_PutChar( char chr, UG_S16 x, UG_S16 y, UG_COLOR fc, UG_COLOR bc )
 {
 	_UG_PutChar(chr,x,y,fc,bc,&gui->font);
-   
 }
 
 void UG_ConsolePutString( char* str )
