@@ -55,6 +55,7 @@ private:
         CI2CMaster		m_I2CMaster;
 	CUSBController		*m_pUSB;
         Csynth                  *m_Synth;
+        CCPUThrottle            m_Throttle;
 
         u64 screenUpdateTime = 0;
 };

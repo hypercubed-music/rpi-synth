@@ -99,6 +99,11 @@ Csynth::Csynth (CInterruptSystem *pInterrupt, CI2CMaster *pI2CMaster)
 {
 	s_pThis = this;
 
+	for (int i = 0; i < NUM_VOICES; i++) {
+		notes[i] = 0;
+		noteOrder[i] = -1;
+	}
+
 	m_nLowLevel     = GetRangeMin () * VOLUME_PERCENT / 100;
 	m_nHighLevel    = GetRangeMax () * VOLUME_PERCENT / 100;
 	m_nNullLevel    = (m_nHighLevel + m_nLowLevel) / 2;
@@ -350,15 +355,16 @@ unsigned Csynth::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 			nSample = (u32) m_nCurrentLevel;
 		}*/
 
-		/*for (int i = 0; i < NUM_VOICES; i++) {
-			float nFloatSample = (voices[i].nextSample() / 8.0);
-			nSample += GetRangeMin() + (u32)(nFloatSample * (GetRangeMax()- GetRangeMin()));
-		}*/
+		for (int i = 0; i < NUM_VOICES; i++) {
+			float nFloatSample = voices[i].nextSample() / NUM_VOICES;
+			int nIntSample = nFloatSample * (float)GetRangeMax();
+			nSample += (u32) nIntSample;
+		}
 
-		_phase += 440.0 / SAMPLE_RATE;
+		/*_phase += 440.0 / SAMPLE_RATE;
 		_phase -= (int)_phase;
-		float floatSample = 0.5 * sin(_phase * 2 * M_PI) + 0.5;
-		nSample = GetRangeMin() + (u32)(floatSample * (GetRangeMax()- GetRangeMin()));
+		float floatSample = (0.5 * sin(_phase * 2 * M_PI) + 0.5) * 0.5;
+		nSample = GetRangeMin() + (u32)(floatSample * (GetRangeMax()- GetRangeMin()));*/
 
 #ifdef USE_HDMI
 		nSample = ConvertIEC958Sample (nSample, nFrame);
@@ -403,6 +409,7 @@ void Csynth::MIDIPacketHandler (unsigned nCable, u8 *pPacket, unsigned nLength)
 
 	if (ucType == MIDI_NOTE_ON)
 	{
+		CLogger::Get()->Write(Fromsynth, LogNotice, "Note On: %d", ucKeyNumber);
 		/*if (   ucVelocity > 0
 		    && ucKeyNumber < sizeof s_KeyFrequency / sizeof s_KeyFrequency[0])
 		{
@@ -418,11 +425,13 @@ void Csynth::MIDIPacketHandler (unsigned nCable, u8 *pPacket, unsigned nLength)
 			}
 		}*/
 		bool activeNote[NUM_VOICES];
+		int nActiveNotes = 0;
 		for (int i = 0; i < NUM_VOICES; i++) {
 			activeNote[i] = s_pThis->voices[i].isNoteOn();
+			nActiveNotes += activeNote[i] ? 1 : 0;
 		}
 		int noteIdx = 0;
-		if (s_pThis->nActiveNotes < NUM_VOICES) {
+		if (nActiveNotes < NUM_VOICES) {
 			// not all voices are active, find an empty one to use
 			for (int i = 0; i < NUM_VOICES; i++) {
 				if (s_pThis->notes[i] == 0 && !activeNote[i]) {
@@ -431,7 +440,7 @@ void Csynth::MIDIPacketHandler (unsigned nCable, u8 *pPacket, unsigned nLength)
 					break;
 				}
 			}
-			s_pThis->noteOrder[noteIdx] = s_pThis->nActiveNotes;
+			s_pThis->noteOrder[noteIdx] = nActiveNotes;
 		} else {
 			// all voices are active, find oldest one and replace that
 			for (int i = 0; i < NUM_VOICES; i++) {
@@ -447,6 +456,7 @@ void Csynth::MIDIPacketHandler (unsigned nCable, u8 *pPacket, unsigned nLength)
 	}
 	else if (ucType == MIDI_NOTE_OFF)
 	{
+		CLogger::Get()->Write(Fromsynth, LogNotice, "Note Off: %d", ucKeyNumber);
 		/*if (s_pThis->m_ucKeyNumber == ucKeyNumber)
 		{
 			s_pThis->m_ucKeyNumber = KEY_NONE;
@@ -455,6 +465,9 @@ void Csynth::MIDIPacketHandler (unsigned nCable, u8 *pPacket, unsigned nLength)
 		for (int i = 0; i < NUM_VOICES; i++) {
 			if (s_pThis->notes[i] == ucKeyNumber) {
 				s_pThis->voices[i].NoteOff();
+				s_pThis->notes[i] = 0;
+				s_pThis->noteOrder[i] = -1;
+				break;
 			}
 		}
 	}

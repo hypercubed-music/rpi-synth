@@ -19,6 +19,7 @@ const float s_KeyFrequency[/* MIDI key number */] =
 
 SynthVoice::SynthVoice(waveType type) {
     _waveType = type;
+    _noteOn = false;
 }
 
 void SynthVoice::NoteOn(u8 pitch, u8 velocity) {
@@ -37,29 +38,29 @@ bool SynthVoice::isNoteOn() {
 }
 
 float SynthVoice::nextSample() {
-    //if (_noteOn) {
+    if (_noteOn) {
         _phase += _freq / SAMPLE_RATE;
         _phase -= (int)_phase;
 
-        float sample = 0.5;
+        float sample = 0;
         switch (_waveType)
         {
             case WAVE_SIN:
-                sample = 0.5 * sin(_phase * 2 * M_PI) + 0.5;
+                sample = sin(_phase * 2 * M_PI);
                 break;
             case WAVE_SAW:
-                sample = _phase;
+                sample = (_phase - 0.5) * 2.0;
                 break;
             case WAVE_SQUARE:
-                sample = _phase > 0.5 ? 1.0 : 0.0; 
+                sample = _phase > 0.5 ? 1.0 : -1.0; 
                 break;
             case WAVE_TRI:
-                sample = _phase > 0.5 ? (_phase * 2.0) : (1.0 - ((_phase - 0.5) * 2.0));
+                sample = _phase < 0.5 ? ((_phase - 0.25) * 4.0) : (0 - ((_phase - 0.75) * 4.0));
                 break;
         }
         float sampleVolume = (float)_velocity / 127.0;
         return sample * sampleVolume;
-    //} else {
-    //    return 0.5;
-    //}
+    } else {
+        return 0;
+    }
 }

@@ -101,6 +101,8 @@ boolean CKernel::Initialize(void)
         }
         m_Logger.Write(FromKernel, LogNotice, "Done initializing");
 
+        m_Throttle.SetSpeed(CPUSpeedMaximum, true);
+
         return bOK;
 }
 

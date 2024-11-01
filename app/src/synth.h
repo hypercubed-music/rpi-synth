@@ -112,9 +112,8 @@ private:
 
 	static Csynth *s_pThis;
 
-	int nActiveNotes = 0;
-	int notes[NUM_VOICES];
-	int noteOrder[NUM_VOICES] = {-1, -1, -1, -1, -1, -1, -1, -1};
+	u8 notes[NUM_VOICES];
+	int noteOrder[NUM_VOICES];
 	SynthVoice voices[NUM_VOICES] = {
 		SynthVoice(WAVE_SIN),
 		SynthVoice(WAVE_SIN),
